@@ -113,21 +113,7 @@ def transaction
 end
 
 def popular_products
-  items_sold = Sold_Product.select(:name).distinct
-  quantities = []
-  item_names = []
-  items_sold.each do |item_name|
-    total_quantity = 0
-    Sold_Product.all.each do |item_object|
-      if item_object.name == item_name['name']
-        total_quantity += item_object.quantity
-      end
-    end
-    item_names << item_name['name'].to_sym
-    quantities << total_quantity
-  end
-  awesomeness = Hash[item_names.zip quantities]
-  awesomeness.values.sort.reverse!
+  Sold_Product.most_popular
   puts "Most popular products in descending order of popularity\n"
   awesomeness.each { |key, value| puts "#{key}, quantity #{value}" }
   puts "Press ENTER to continue..."
