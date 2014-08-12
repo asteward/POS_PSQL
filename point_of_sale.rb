@@ -21,6 +21,7 @@ def menu
     puts "Select R to initiate a return"
     puts "Select T to begin a new transaction"
     puts "Select E to exit the POS"
+    print "\n>"
     user_input = gets.chomp
     case user_input
       when 'C' then create_customer
@@ -34,7 +35,11 @@ def menu
 end
 
 def create_customer
-
+  puts "Enter customer name:"
+  print ">"
+  customer_name = gets.chomp
+  customer = Customer.create({name: customer_name})
+  puts "#{customer.name} has been added."
 end
 
 
