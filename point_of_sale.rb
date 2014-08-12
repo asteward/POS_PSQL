@@ -1,8 +1,10 @@
 require 'active_record'
+require './lib/super'
 require './lib/cashier'
 require './lib/customer'
 require './lib/product'
 require './lib/purchase'
+require './lib/return'
 require './lib/sold_product'
 require 'Date'
 
@@ -23,6 +25,7 @@ def menu
     puts "Select R to initiate a return"
     puts "Select T to begin a new transaction"
     puts "Select P to find our most popular products"
+    puts "Select POS to find our most popular returns"
     puts "Select E to exit the POS"
     print "\n>"
     user_input = gets.chomp
@@ -33,6 +36,7 @@ def menu
       when 'R' then return_product
       when 'T' then transaction
       when 'P' then popular_products
+      when 'POS' then popular_returns
       when 'E' then exit
     end
   menu
@@ -72,7 +76,10 @@ def return_product
   puts "Enter purchase price of product:"
   print ">$"
   product_price = gets.chomp.to_f
-  return_item = Return.create({:name => product_name, :cost => product_price})
+  puts "Enter quantity of product:"
+  print ">"
+  quantity = gets.chomp.to_i
+  return_item = Return.create({:name => product_name, :cost => product_price, :quantity => quantity})
   puts "#{product_name} has been successfully returned."
   puts "You have been credited $#{product_price}."
 end
@@ -113,8 +120,17 @@ def transaction
 end
 
 def popular_products
-  Sold_Product.most_popular
+  awesomeness = Sold_Product.most_popular
   puts "Most popular products in descending order of popularity\n"
+  awesomeness.each { |key, value| puts "#{key}, quantity #{value}" }
+  puts "Press ENTER to continue..."
+  gets
+end
+
+def popular_returns
+  awesomeness = Return.most_popular
+  puts awesomeness
+  puts "Most popular returns in descending order of popularity\n"
   awesomeness.each { |key, value| puts "#{key}, quantity #{value}" }
   puts "Press ENTER to continue..."
   gets
